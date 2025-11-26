@@ -1,0 +1,53 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-test-security-docker:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        pip install -r app/requirements.txt
+        pip install pytest
+
+    - name: Run tests
+      run: pytest -q app/tests
+
+    - name: Semgrep SAST Scan
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: "p/ci"
+
+    - name: Dependency Scan (pip-audit)
+      run: |
+        pip install pip-audit
+        pip-audit --strict
+
+    - name: Build Docker image
+      run: docker build -t orders-app -f docker/Dockerfile .
+
+    - name: Install Trivy
+      run: |
+        sudo apt-get update
+        sudo apt-get install wget -y
+        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+        tar -xzf trivy_Linux-64bit.tar.gz
+        sudo mv trivy /usr/local/bin/
+
+    - name: Trivy Image Scan
+      run: trivy image --exit-code 1 --severity HIGH,CRITICAL orders-app
