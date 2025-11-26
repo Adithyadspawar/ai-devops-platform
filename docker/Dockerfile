@@ -1,5 +1,5 @@
 # docker/Dockerfile
-FROM python:3.11-alpine AS base
+FROM python:3.11-alpine3.20
 
 # Set working directory
 WORKDIR /app
