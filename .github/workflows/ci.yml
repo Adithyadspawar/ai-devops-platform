@@ -25,6 +25,9 @@ jobs:
         pip install -r app/requirements.txt
         pip install pytest
 
+    - name: Set PYTHONPATH
+      run: echo "PYTHONPATH=$(pwd)" >> $GITHUB_ENV
+      
     - name: Run tests
       run: pytest -q app/tests
 
@@ -51,3 +54,5 @@ jobs:
 
     - name: Trivy Image Scan
       run: trivy image --exit-code 1 --severity HIGH,CRITICAL orders-app
+
+   
