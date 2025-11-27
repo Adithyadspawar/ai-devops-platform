@@ -42,7 +42,10 @@ jobs:
         pip-audit --strict
 
     - name: Build Docker image
-      run: docker build -t orders-app -f docker/Dockerfile .
+      run: docker build -t ghcr.io/adithyadspawar/ai-devops-platform:latest -f docker/Dockerfile .
+
+    - name: Push Docker image
+      run: docker push ghcr.io/adithyadspawar/ai-devops-platform:latest
 
     - name: Install Trivy
       run: |
