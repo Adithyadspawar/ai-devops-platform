@@ -41,6 +41,9 @@ jobs:
         pip install pip-audit
         pip-audit --strict
 
+    - name: Login to GitHub Container Registry
+      run: echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+
     - name: Build Docker image
       run: docker build -t ghcr.io/adithyadspawar/ai-devops-platform:latest -f docker/Dockerfile .
 
