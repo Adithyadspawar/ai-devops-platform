@@ -59,6 +59,7 @@ jobs:
         sudo mv trivy /usr/local/bin/
 
     - name: Trivy Image Scan
-      run: trivy image --exit-code 1 --severity HIGH,CRITICAL orders-app
+      run: trivy image --exit-code 1 --severity HIGH,CRITICAL ghcr.io/adithyadspawar/ai-devops-platform:latest
+
 
    
