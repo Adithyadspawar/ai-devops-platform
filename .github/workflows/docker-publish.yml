@@ -21,7 +21,7 @@ jobs:
         password: ${{ secrets.GHCR_TOKEN }}
 
     - name: Build Docker image
-      run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/ai-devops-platform:latest -f docker/Dockerfile .
+      run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME,, }}/ai-devops-platform:latest -f docker/Dockerfile .
 
     - name: Push Docker image
       run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/ai-devops-platform:latest
