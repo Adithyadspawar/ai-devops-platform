@@ -9,7 +9,7 @@ on:
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout code
@@ -19,11 +19,6 @@ jobs:
       uses: azure/setup-kubectl@v4
       with:
         version: v1.33.0
-
-    - name: Configure kubeconfig
-      run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBECONFIG_K3S }}" > ~/.kube/config
 
     - name: Deploy to K3s
       run: |
