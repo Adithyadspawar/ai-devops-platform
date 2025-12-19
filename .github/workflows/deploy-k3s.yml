@@ -1,0 +1,32 @@
+name: Deploy to K3s
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v4
+      with:
+        version: v1.33.0
+
+    - name: Configure kubeconfig
+      run: |
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG_K3S }}" > ~/.kube/config
+
+    - name: Deploy to K3s
+      run: |
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -n ai-devops -f k8s/deployment.yaml
+        kubectl apply -n ai-devops -f k8s/service.yaml
