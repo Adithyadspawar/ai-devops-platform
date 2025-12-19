@@ -15,13 +15,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v4
-      with:
-        version: v1.33.0
-
     - name: Deploy to K3s
       run: |
-        kubectl apply -f k8s/namespace.yaml
-        kubectl apply -n ai-devops -f k8s/deployment.yaml
-        kubectl apply -n ai-devops -f k8s/service.yaml
+        sudo k3s kubectl apply -f k8s/namespace.yaml
+        sudo k3s kubectl apply -n ai-devops -f k8s/deployment.yaml
+        sudo k3s kubectl apply -n ai-devops -f k8s/service.yaml
