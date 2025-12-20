@@ -21,3 +21,8 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
+          envFrom:
+            - configMapRef:
+               name: app-config
+            - secretRef:
+               name: app-secrets
