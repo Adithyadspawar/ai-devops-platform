@@ -16,16 +16,22 @@ SENTRY_ENV = os.environ.get("SENTRY_ENV", "development")
 def init_sentry():
     if not SENTRY_AVAILABLE or not SENTRY_DSN:
         # Sentry not configured or package missing — safe no-op
+        print("Sentry not configured, skipping initialization")
         return None
-    sentry_sdk.init(
-        dsn=SENTRY_DSN,
-        environment=SENTRY_ENV,
-        traces_sample_rate=0.1,
-    )
-    return sentry_sdk
+    
+    try:
+        sentry_sdk.init(
+            dsn=SENTRY_DSN,
+            environment=SENTRY_ENV,
+            traces_sample_rate=0.1,
+        )
+        print("Sentry initialized successfully")
+        return sentry_sdk
+    except Exception as e:
+        print(f"Failed to initialize Sentry: {e}")
+        return None
 
 def wrap_app_with_sentry(app):
     if SENTRY_AVAILABLE and SENTRY_DSN and SentryAsgiMiddleware is not None:
         return SentryAsgiMiddleware(app)
     return app
-
