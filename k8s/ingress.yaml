@@ -4,6 +4,10 @@ metadata:
   name: ai-devops-ingress
   namespace: ai-devops
 spec:
+  tls:
+  - hosts:
+    - api.local
+    secretName: ai-devops-tls
   rules:
   - host: api.local
     http:
@@ -15,3 +19,4 @@ spec:
             name: ai-devops-service
             port:
               number: 8000
+
