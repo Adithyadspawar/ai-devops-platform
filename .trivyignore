@@ -1,0 +1,5 @@
+# Ignoring jaraco.context vulnerability in setuptools vendored dependency
+# This is a vendored package inside setuptools that cannot be updated independently
+# The vulnerability is in setuptools._vendor.jaraco.context, not directly used by our app
+# Reference: https://github.com/advisories/GHSA-58pv-8j8x-9vj2
+GHSA-58pv-8j8x-9vj2
