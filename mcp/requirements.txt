@@ -1,0 +1,8 @@
+# mcp/requirements.txt
+# Requirements for the MCP AI Debugging Server
+
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=1.10.0
+requests>=2.28.0
+httpx>=0.24.0

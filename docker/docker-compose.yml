@@ -8,3 +8,5 @@ services:
       - "8000:8000"
     volumes:
       - ../orders.db:/app/orders.db
+    environment:
+      - SENTRY_DSN=https://9e55b5eb13ce3ba338d60c36bbed72c5@o4510738241814528.ingest.us.sentry.io/4510738247909376

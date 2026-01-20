@@ -64,6 +64,61 @@ def api_delete_order(order_id: int):
 def health():
     return {"status": "ok"}
 
+# Sentry debug endpoint - triggers a real exception for testing
+@app.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0
+    return {"this": "will never return"}
+
+# ============================================
+# REALISTIC ERROR SCENARIOS FOR SENTRY TESTING
+# ============================================
+
+@app.get("/error/database")
+def simulate_database_error():
+    """Simulates a database connection failure - common in production"""
+    raise ConnectionError("Database connection failed: Unable to connect to PostgreSQL at db.example.com:5432")
+
+@app.get("/error/null-pointer")
+def simulate_null_pointer():
+    """Simulates accessing data from a None object - very common bug"""
+    user = None
+    # This will raise AttributeError: 'NoneType' object has no attribute 'name'
+    return {"username": user.name}
+
+@app.get("/error/key-missing")
+def simulate_key_error():
+    """Simulates missing key in API response - happens when external API changes"""
+    api_response = {"id": 123, "status": "active"}
+    # This key doesn't exist - KeyError
+    return {"email": api_response["email"]}
+
+@app.get("/error/timeout")
+def simulate_timeout():
+    """Simulates an external service timeout"""
+    import time
+    # Simulating a slow external API call that times out
+    raise TimeoutError("Request to payment gateway timed out after 30 seconds")
+
+@app.get("/error/value")
+def simulate_value_error():
+    """Simulates invalid data processing - common in data pipelines"""
+    price = "not-a-number"
+    # This will raise ValueError
+    total = float(price) * 1.18  # trying to calculate tax
+    return {"total": total}
+
+@app.get("/error/permission")
+def simulate_permission_error():
+    """Simulates unauthorized access attempt"""
+    raise PermissionError("User 'guest' does not have permission to access /admin/settings")
+
+@app.get("/error/file-not-found")
+def simulate_file_error():
+    """Simulates missing configuration file"""
+    with open("/etc/app/missing-config.yaml", "r") as f:
+        return {"config": f.read()}
+
 @app.get("/metrics")
 def metrics():
     conn = get_conn()
