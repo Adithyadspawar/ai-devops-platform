@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-privileged-pod
+  labels:
+    app: bad-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    securityContext:
+      privileged: true  # This should be BLOCKED by Kyverno
+    resources:
+      # Missing limits - This should also be blocked
+      requests:
+        memory: "64Mi"
+        cpu: "250m"

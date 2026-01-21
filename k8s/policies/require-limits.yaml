@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-cpu-memory-limits
+  annotations:
+    policies.kyverno.io/title: Require CPU and Memory Limits
+    policies.kyverno.io/category: Best Practices
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      Containers without resource limits can cause resource exhaustion (OOM) on the node.
+      This policy requires that a resource limit is specified for both CPU and memory.
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+    - name: validate-resources
+      match:
+        any:
+        - resources:
+            kinds:
+              - Pod
+      validate:
+        message: "CPU and memory resource limits are required."
+        pattern:
+          spec:
+            containers:
+            - resources:
+                limits:
+                  memory: "?*"
+                  cpu: "?*"
