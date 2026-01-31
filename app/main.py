@@ -16,7 +16,20 @@ init_db()
 init_sentry()
 
 # Create FastAPI app
-app = FastAPI(title="Mini Orders API")
+app = FastAPI(
+    title="Mini Orders API",
+    servers=[{"url": "http://localhost:8000", "description": "Local Development"}]
+)
+
+# Add CORS Middleware to allow browser usage (Swagger UI)
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all for dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/orders", response_model=OrderInDB, status_code=201)
 def api_create_order(payload: OrderCreate):
@@ -67,6 +80,7 @@ def health():
 # Sentry debug endpoint - triggers a real exception for testing
 @app.get("/sentry-debug")
 async def trigger_error():
+    print("⚠️ [DEBUG] Triggering ZeroDivisionError via API Request ⚠️")
     division_by_zero = 1 / 0
     return {"this": "will never return"}
 

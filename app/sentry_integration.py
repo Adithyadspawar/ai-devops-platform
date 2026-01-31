@@ -24,6 +24,7 @@ def init_sentry():
             dsn=SENTRY_DSN,
             environment=SENTRY_ENV,
             traces_sample_rate=0.1,
+            debug=True,  # Enable debug logging for troubleshooting
         )
         print("Sentry initialized successfully")
         return sentry_sdk
